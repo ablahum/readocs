@@ -2,7 +2,6 @@ import UploadForm from '@/components/upload/upload-form'
 import { chunkFile, parseFile } from '@/lib/langchain'
 import { embedWithOpenAI, upsertToPinecone } from '@/lib/openai'
 import { pinecone } from '@/lib/pinecone'
-import { redirect } from 'next/navigation'
 
 async function processFiles({
   fileType,
@@ -69,18 +68,16 @@ async function processFiles({
 
     throw err
   }
-
-  redirect('/ask')
 }
 
 export default async function Page() {
   //* DELETE ALL INDEX FROM PINECONE -------------------------------------
-  const index = pinecone.index('readocs')
+  // const index = pinecone.index('readocs')
 
-  await index.deleteAll()
+  // await index.deleteAll()
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-8'>
+    <div className='min-h-screen flex items-center justify-center p-4'>
       <UploadForm processFiles={processFiles} />
     </div>
   )
