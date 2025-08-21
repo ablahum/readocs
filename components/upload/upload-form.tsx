@@ -7,6 +7,7 @@ import { X } from 'lucide-react'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { z } from 'zod'
 import path from 'path'
+import { useRouter } from 'next/navigation'
 
 //! VALIDATION: MOVE TO ANOTHER FILE
 const acceptedMimeTypes = new Set([
@@ -45,6 +46,8 @@ export default function UploadForm({
   const [files, setFiles] = useState<File[]>([])
   const [error, setError] = useState<string | null>(null)
 
+  const router = useRouter()
+
   const { startUpload } = useUploadThing('documentUploader', {
     onClientUploadComplete: async result => {
       try {
@@ -52,8 +55,11 @@ export default function UploadForm({
           const fileType = path.extname(res.name).toLowerCase().replace('.', '')
           const fileUrl = res.ufsUrl
 
+          console.log('processing file:', res)
           await processFiles({ fileType, fileUrl })
         }
+
+        router.push('/ask')
       } catch (err) {
         console.error('Error occurred while processing the file:', err)
       }

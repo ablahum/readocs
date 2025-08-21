@@ -2,7 +2,6 @@ import UploadForm from '@/components/upload/upload-form'
 import { chunkFile, parseFile } from '@/lib/langchain'
 import { embedWithOpenAI, upsertToPinecone } from '@/lib/openai'
 import { pinecone } from '@/lib/pinecone'
-import { redirect } from 'next/navigation'
 
 async function processFiles({
   fileType,
@@ -69,8 +68,6 @@ async function processFiles({
 
     throw err
   }
-
-  redirect('/ask')
 }
 
 export default async function Page() {
