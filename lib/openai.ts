@@ -21,17 +21,45 @@ export async function embedWithOpenAI(chunked: string[], dims = 512) {
   return embeddings
 }
 
-export async function retrieveFromPinecone(query: string, dims = 512) {
-  //* 1. EMBED USER'S QUESTION
+export async function upsertToPinecone({
+  chunked,
+  embedded,
+  fileType,
+  fileUrl,
+}: {
+  chunked: string[]
+  embedded: number[][]
+  fileType: string
+  fileUrl: string
+}) {
+  const index = pinecone.index('readocs')
+
+  const upsert = await index.upsert(
+    embedded.map((vector, idx) => ({
+      id: `chunk-${Date.now()}-${idx}`,
+      values: vector,
+      metadata: {
+        text: chunked[idx],
+        file: fileUrl,
+        type: fileType,
+      },
+    })),
+  )
+
+  return upsert
+}
+
+async function retrieveFromPinecone(query: string, dims = 512) {
+  const index = pinecone.index('readocs')
+
+  //* EMBED USER'S QUESTION WITH OPENAI ----------------------------------
   const embedding = await openai.embeddings.create({
     model: 'text-embedding-3-small',
     input: query,
-    dimensions: dims, // harus sama dengan index kamu
+    dimensions: dims,
   })
 
-  //* 2. QUERY PINECONE
-  const index = pinecone.index('readocs')
-
+  //* QUERY TO PINECONE USING EMBEDDED QUESTION --------------------------
   const results = await index.query({
     topK: 5,
     vector: embedding.data[0].embedding,
@@ -52,12 +80,11 @@ export async function answerQuestion(query: string) {
       {
         role: 'system',
         content:
-          // 'You are an internal AI assistant. Please answer based on the given context:',
-          'Kamu adalah asisten AI internal perusahaan. Jawab berdasarkan konteks berikut.',
+          "You are a highly intelligent and professional AI assistant. Your job is to answer user questions accurately, clearly, and relevantly based solely on the information contained in the uploaded document. If an answer isn't found within the context of the document, be honest about the lack of information. Don't add or fabricate answers outside the context of the document. Answer in formal, easy-to-understand Indonesian.",
       },
       {
         role: 'user',
-        content: `Konteks:\n${context}\n\nPertanyaan: ${query}`,
+        content: `Context:\n${context}\n\Question: ${query}`,
       },
     ],
   })

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useUploadThing } from '@/utils/uploadthing'
 import { X } from 'lucide-react'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import { z } from 'zod'
 import path from 'path'
 
@@ -101,14 +101,13 @@ export default function UploadForm({
     }
 
     setFiles(combinedFiles)
-    // reset input supaya memilih file yang sama lagi tetap memicu onChange
     event.currentTarget.value = ''
   }
 
   const handleDelete = (index: number) =>
     setFiles(prevFiles => prevFiles.filter((_, i) => i !== index))
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError(null)
 
