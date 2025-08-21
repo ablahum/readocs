@@ -44,6 +44,7 @@ export default function UploadForm({
   }) => Promise<unknown>
 }) {
   const [files, setFiles] = useState<File[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
   const router = useRouter()
@@ -55,7 +56,6 @@ export default function UploadForm({
           const fileType = path.extname(res.name).toLowerCase().replace('.', '')
           const fileUrl = res.ufsUrl
 
-          console.log('processing file:', res)
           await processFiles({ fileType, fileUrl })
         }
 
@@ -80,9 +80,7 @@ export default function UploadForm({
     const invalidFiles = incoming.filter(file => file.size > MAX_FILE_SIZE)
 
     if (invalidFiles.length > 0) {
-      setError(
-        'Failed to upload all selected documents. Each file must be 2MB or less.',
-      )
+      setError('Failed to select all documents. Each file must be 2MB or less.')
     } else {
       setError(null)
     }
@@ -115,6 +113,7 @@ export default function UploadForm({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setLoading(true)
     setError(null)
 
     try {
@@ -124,7 +123,7 @@ export default function UploadForm({
 
         return
       } else if (files.length > 10) {
-        setError('Please only select less than 10 document.')
+        setError('Please only select less than 10 documents.')
 
         return
       }
@@ -137,8 +136,8 @@ export default function UploadForm({
         return
       }
 
-      // alert('Upload files successful.')
       setFiles([])
+      setLoading(false)
     } catch (err) {
       console.error(err)
 
@@ -149,14 +148,14 @@ export default function UploadForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className='w-full max-w-sm space-y-3 flex flex-col gap-4'
+      className='w-full max-w-lg space-y-3 flex flex-col gap-4'
     >
       <div className='space-y-1 flex flex-col gap-2 m-0'>
         <label
           htmlFor='file'
           className='font-medium m-0'
         >
-          Upload a Documents
+          Upload Documents
         </label>
 
         <Input
@@ -165,43 +164,71 @@ export default function UploadForm({
           accept='.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
           multiple
           onChange={e => handleChange(e)}
+          className={error ? 'border-destructive' : ''}
         />
 
-        {error ? <p className='text-destructive'>{error}</p> : null}
+        {error && <p className='text-destructive font-semibold'>{error}</p>}
 
         {files.length > 0 && (
           <>
             <p className='font-medium m-0'>Documents to Upload</p>
 
-            <ul className='list-disc pl-5 flex flex-col gap-1'>
+            <ol className='list-decimal pl-5 flex flex-col gap-1 [&>li]:font-semibold'>
               {files.map((f, idx) => (
-                <div
-                  key={`${f.name}-${idx}`}
-                  className='flex items-center justify-between'
-                >
-                  <li>
-                    <span className='truncate'>{f.name}</span>
-                  </li>
+                <li key={`${f.name}-${idx}`}>
+                  <div className='flex items-center justify-between'>
+                    <span className='truncate max-w-[300px] block font-normal'>
+                      {f.name}
+                    </span>
 
-                  <Button
-                    onClick={() => handleDelete(idx)}
-                    variant='outline'
-                    size='icon'
-                  >
-                    <X className='w-3 h-3' />
-                  </Button>
-                </div>
+                    <Button
+                      onClick={() => handleDelete(idx)}
+                      variant='outline'
+                      size='icon'
+                      className='hover:border-destructive hover:outline-destructive cursor-pointer hover:bg-transparent'
+                    >
+                      <X className='w-3 h-3' />
+                    </Button>
+                  </div>
+                </li>
               ))}
-            </ul>
+            </ol>
           </>
         )}
       </div>
 
       <Button
         type='submit'
-        className='w-full uppercase tracking-widest'
+        className='w-full uppercase tracking-widest flex items-center justify-center'
+        disabled={loading}
       >
-        Upload
+        {loading ? (
+          <>
+            <svg
+              className='animate-spin h-5 w-5 mr-2 text-white'
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'
+            >
+              <circle
+                className='opacity-25'
+                cx='12'
+                cy='12'
+                r='10'
+                stroke='currentColor'
+                strokeWidth='4'
+              ></circle>
+              <path
+                className='opacity-75'
+                fill='currentColor'
+                d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+              ></path>
+            </svg>
+            Uploading...
+          </>
+        ) : (
+          'Upload'
+        )}
       </Button>
     </form>
   )
