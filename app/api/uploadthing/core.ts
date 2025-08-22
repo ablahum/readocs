@@ -1,5 +1,4 @@
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
-import { fi } from 'zod/locales'
 
 const file = createUploadthing()
 
