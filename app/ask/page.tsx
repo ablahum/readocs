@@ -1,4 +1,4 @@
-import AskForm from '@/components/ask/ask-form'
+import AskForm from '@/components/forms/ask-form'
 import { answerQuestion } from '@/lib/openai'
 
 export default function Page() {
