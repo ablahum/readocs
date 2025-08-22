@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import UploadForm from '@/components/forms/upload-form'
 import { chunkFile, parseFile } from '@/lib/langchain'
 import { embedWithOpenAI, upsertToPinecone } from '@/lib/openai'
