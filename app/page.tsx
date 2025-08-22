@@ -77,7 +77,6 @@ export default async function Home() {
   //* DELETE ALL INDEX FROM PINECONE -------------------------------------
   const index = pinecone.index('readocs')
 
-  // Cek apakah ada data di index sebelum menghapus
   const stats = await index.describeIndexStats()
   if ((stats.totalRecordCount ?? 0) > 0) {
     await index.deleteAll()
