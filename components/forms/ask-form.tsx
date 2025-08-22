@@ -1,9 +1,10 @@
 'use client'
 
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { z } from 'zod'
 
 /*
   Penjelasan:
@@ -19,14 +20,25 @@ import Link from 'next/link'
 
 */
 
+const questionSchema = z.object({
+  question: z
+    .string()
+    .min(5, { message: 'Question must be at least 5 characters.' })
+    .max(500, { message: 'Question must be at most 500 characters.' })
+    .trim(),
+})
+
 export default function AskForm({
   handleAsk,
 }: {
   handleAsk: (formData: FormData) => Promise<string>
 }) {
+  const [question, setQuestion] = useState<string>('') // state untuk input
   const [answer, setAnswer] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -34,11 +46,13 @@ export default function AskForm({
     setError(null)
 
     const formData = new FormData(event.currentTarget)
-    const question = formData.get('question')?.toString().trim()
+    const questionValue = formData.get('question')?.toString() ?? ''
 
-    if (!question) {
+    const validation = questionSchema.safeParse({ question: questionValue })
+
+    if (!validation.success) {
       setLoading(false)
-      setError("Question can't be empty.")
+      setError(validation.error.issues[0]?.message || 'Pertanyaan tidak valid.')
       return
     }
 
@@ -52,8 +66,11 @@ export default function AskForm({
         setLoading(false)
         setError(null)
       }
+      setQuestion('')
+      if (inputRef.current) inputRef.current.value = ''
     } catch (err) {
       console.error(err)
+
       setError('Failed to answer the question. Please try again.')
     } finally {
       setLoading(false)
@@ -72,7 +89,9 @@ export default function AskForm({
           <p className='italic text-center'>{answer}</p>
         </div>
       ) : (
-        <p className='text-6xl'>What do you want to Ask?</p>
+        <p className='text-4xl font-semibold text-center'>
+          What do you want to Ask?
+        </p>
       )}
 
       <label
@@ -88,6 +107,9 @@ export default function AskForm({
         type='text'
         placeholder='Write your question...'
         className={error ? 'border-destructive' : ''}
+        value={question}
+        onChange={e => setQuestion(e.target.value)}
+        ref={inputRef}
       />
 
       {error && <p className='text-destructive font-semibold'>{error}</p>}

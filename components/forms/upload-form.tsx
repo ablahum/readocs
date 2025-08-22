@@ -9,7 +9,6 @@ import { z } from 'zod'
 import path from 'path'
 import { useRouter } from 'next/navigation'
 
-//! VALIDATION: MOVE TO ANOTHER FILE
 const acceptedMimeTypes = new Set([
   'application/pdf',
   'application/msword',
@@ -71,7 +70,6 @@ export default function UploadForm({
   })
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    //! EXTRA VALIDATION: MOVE TO ANOTHER FILE
     const incoming = Array.from(event.target.files ?? [])
 
     if (incoming.length === 0) return
