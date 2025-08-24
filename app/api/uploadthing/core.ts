@@ -18,20 +18,9 @@ export const ourFileRouter = {
     },
   })
     .middleware(async () => {
-      return { userId: 'anonymous' }
+      return {}
     })
-    .onUploadComplete(async ({ metadata, file }) => {
-      // // Catatan: jika upload multiple, parameter 'file' akan berupa array
-      // if (Array.isArray(file)) {
-      //   file.forEach(f => {
-      //     // console.log('Upload complete for userId:', metadata.userId)
-      //     console.log('file', f)
-      //   })
-      // } else {
-      //   // console.log('Upload complete for userId:', metadata.userId)
-      //   console.log('file', file)
-      // }
-    }),
+    .onUploadComplete(async () => {}),
 } satisfies FileRouter
 
 export type OurFileRouter = typeof ourFileRouter
