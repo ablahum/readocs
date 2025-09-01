@@ -2,7 +2,7 @@
 
 Readocs is a personal portfolio project that showcases the implementation of **LLM-powered chat** using user-provided documents (PDF, DOC, DOCX). The project explores **OpenAI LLM**, **LangChain**, **RAG (Retrieval Augmented Generation)**, and **Pinecone** as the Vector Database, wrapped in a modern **Next.js** application.
 
-> Live Demo: [Sommaire on Vercel](https://readocs-ablahum.vercel.app)
+> Live Demo: [Readocs on Vercel](https://readocs-ablahum.vercel.app)
 
 ## 🚀 Features
 
