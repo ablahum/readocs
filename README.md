@@ -57,11 +57,11 @@ The app will be available at http://localhost:3000.
   <summary>A glimpse of screenshots of the apps</summary>
 
   ### Upload page
-  ![home](https://github.com/ablahum/sommaire/blob/main/public/upload.png)
+  ![home](https://github.com/ablahum/readocs/blob/main/public/upload.png)
   ### Ask page
-  ![upload](https://github.com/ablahum/sommaire/blob/main/public/ask.png)
+  ![upload](https://github.com/ablahum/readocs/blob/main/public/ask.png)
   ### Ask with Answer page
-  ![dashboard](https://github.com/ablahum/sommaire/blob/main/public/ask-answer.png)
+  ![dashboard](https://github.com/ablahum/readocs/blob/main/public/ask-answer.png)
 </details>
 
 ## 🔑 Key Highlights
