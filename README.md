@@ -38,16 +38,12 @@ npm install
 ### Environment Setup
 Create a `.env.local` file in the root of the project with the following keys:
 ```
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NODE_ENV=development
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_cGxlYXNlZC1wYXJyb3QtNTUuY2xlcmsuYWNjb3VudHMuZGV2JA
-CLERK_SECRET_KEY=sk_test_acbOOxX5sE8Bt7qmsAAY2gc6K59tbrM6tgEvobrnZc
-UPLOADTHING_TOKEN=your_uploadthing_token_here
-OPENAI_API_KEY=your_openai_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
-DATABASE_URL=your_neondb_connection_url_here
-STRIPE_SECRET_KEY=your_stripe_secret_key_here
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret_here
+# Uploadthing
+UPLOADTHING_TOKEN='your_uploadthing_token'
+# OpenAI
+OPENAI_API_KEY=your_openai_api_key
+# Pinecone
+PINECONE_API_KEY=your_pinecone_api_key
 ```
 
 ### Running the App
