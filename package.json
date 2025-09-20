@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
     "@langchain/community": "^0.3.52",
     "@langchain/core": "^0.3.71",
     "@pinecone-database/pinecone": "^6.1.2",
