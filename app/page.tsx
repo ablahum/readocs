@@ -20,7 +20,6 @@ async function processFiles({
 
     try {
       parsed = await parseFile({ fileType, fileUrl })
-      console.log('hasil parse:', parsed)
     } catch (err) {
       console.error('Failed to parse file:', err)
 
@@ -34,7 +33,6 @@ async function processFiles({
 
     try {
       chunked = await chunkFile(parsed)
-      console.log('hasil chunk:', parsed)
     } catch (err) {
       console.error('Failed to chunk parsed text:', err)
 
@@ -48,7 +46,6 @@ async function processFiles({
 
     try {
       embedded = await embedWithOpenAI(chunked)
-      console.log('hasil embed:', parsed)
     } catch (err) {
       console.error('Failed to embed chunked text:', err)
 
