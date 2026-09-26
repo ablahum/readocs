@@ -118,6 +118,7 @@ export default function UploadForm({
       if (files.length === 0) {
         setError('Please select at least 1 document.')
 
+        setLoading(false)
         return
       } else if (files.length > 10) {
         setError('Please only select less than 10 documents.')
