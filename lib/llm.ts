@@ -32,7 +32,11 @@ export async function answerQuestion(query: string) {
   try {
     const matches = await retrieveFromPinecone(query)
     const context = Array.isArray(matches)
-      ? matches.map((m) => m?.metadata?.text).join('\n\n')
+      ? matches
+          .map(
+            (match: { metadata?: { text?: string } }) => match?.metadata?.text,
+          )
+          .join('\n\n')
       : ''
 
     const systemPrompt = `You are a highly intelligent and professional AI assistant. Your job is to answer user questions accurately, clearly, and relevantly based solely on the information contained in the uploaded document. If an answer isn't found within the context of the document, be honest about the lack of information. Don't add or fabricate answers outside the context of the document. Answer in formal, easy-to-understand English.
