@@ -1,6 +1,6 @@
 import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf'
 import { DocxLoader } from '@langchain/community/document_loaders/fs/docx'
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 import mammoth from 'mammoth'
 
 export async function parseFile({
@@ -21,13 +21,13 @@ export async function parseFile({
       case 'pdf': {
         const loader = new PDFLoader(blob)
         const docs = await loader.load()
-        return docs.map(doc => doc.pageContent).join('\n')
+        return docs.map((doc) => doc.pageContent).join('\n')
       }
 
       case 'docx': {
         const loader = new DocxLoader(blob)
         const docs = await loader.load()
-        return docs.map(doc => doc.pageContent).join('\n')
+        return docs.map((doc) => doc.pageContent).join('\n')
       }
 
       case 'doc': {
@@ -42,18 +42,24 @@ export async function parseFile({
         throw new Error(`Unsupported file type: ${fileType}`)
     }
   } catch (err) {
-    console.error('Error parsing file:', err)
+    console.error('Error while parsing file.', err)
 
     throw err
   }
 }
 
 export async function chunkFile(parsed: string) {
-  const chunk = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 200,
-    separators: ['\n\n', '\n', '.', ' ', ''],
-  })
+  try {
+    const chunk = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 200,
+      separators: ['\n\n', '\n', '.', ' ', ''],
+    })
 
-  return await chunk.splitText(parsed)
+    return await chunk.splitText(parsed)
+  } catch (err) {
+    console.error('Error while chunk parsed text.', err)
+
+    throw err
+  }
 }

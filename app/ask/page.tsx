@@ -1,5 +1,5 @@
 import AskForm from '@/components/forms/ask-form'
-import { answerQuestion } from '@/lib/openai'
+import { answerQuestion } from '@/lib/llm'
 
 export default function Page() {
   async function handleAsk(formData: FormData): Promise<string> {
@@ -9,11 +9,12 @@ export default function Page() {
     if (!question) return 'Question is empty.'
 
     const answer = await answerQuestion(question)
+
     return answer ?? 'No answer.'
   }
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-4'>
+    <div className="min-h-screen flex items-center justify-center p-4">
       <AskForm handleAsk={handleAsk} />
     </div>
   )

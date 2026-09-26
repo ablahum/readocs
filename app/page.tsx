@@ -2,8 +2,8 @@ export const dynamic = 'force-dynamic'
 
 import UploadForm from '@/components/forms/upload-form'
 import { chunkFile, parseFile } from '@/lib/langchain'
-import { embedWithOpenAI, upsertToPinecone } from '@/lib/openai'
-import { pinecone } from '@/lib/pinecone'
+import { embedChunks } from '@/lib/llm'
+import { pinecone, upsertToPinecone } from '@/lib/pinecone'
 
 async function processFiles({
   fileType,
@@ -15,7 +15,7 @@ async function processFiles({
   'use server'
 
   try {
-    //* 1. PARSE FILE ----------------------------------------------------
+    //* 1. parse file ----------
     let parsed
 
     try {
@@ -28,7 +28,7 @@ async function processFiles({
       )
     }
 
-    //* 2. CHUNK PARSED TEXT ---------------------------------------------
+    //* 2. chunk parsed text ----------
     let chunked
 
     try {
@@ -41,18 +41,18 @@ async function processFiles({
       )
     }
 
-    //* 3. EMBED CHUNKED TEXT --------------------------------------------
+    //* 3. embed chunked text ----------
     let embedded
 
     try {
-      embedded = await embedWithOpenAI(chunked)
+      embedded = await embedChunks(chunked)
     } catch (err) {
       console.error('Failed to embed chunked text:', err)
 
       throw new Error('An error occurred while embedding the data.')
     }
 
-    //* 4. INSERT/UPSERT EMBEDDED VECTOR DB ------------------------------
+    //* 4. insert/upsert embedded to vectordb ----------
     try {
       await upsertToPinecone({
         chunked,
@@ -73,16 +73,13 @@ async function processFiles({
 }
 
 export default async function Home() {
-  //* DELETE ALL INDEX FROM PINECONE -------------------------------------
   const index = pinecone.index('readocs')
 
   const stats = await index.describeIndexStats()
-  if ((stats.totalRecordCount ?? 0) > 0) {
-    await index.deleteAll()
-  }
+  if ((stats.totalRecordCount ?? 0) > 0) await index.deleteAll()
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-4'>
+    <div className="min-h-screen flex items-center justify-center p-4">
       <UploadForm processFiles={processFiles} />
     </div>
   )
