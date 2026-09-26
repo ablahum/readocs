@@ -20,17 +20,17 @@ const MAX_FILE_SIZE = 2 * 1024 * 1024
 const filesSchema = z
   .array(z.instanceof(File))
   .refine(
-    fs =>
-      fs.every(f => {
+    (fs) =>
+      fs.every((f) => {
         const name = f.name.toLowerCase()
-        const hasValidExt = acceptedExtensions.some(ext => name.endsWith(ext))
+        const hasValidExt = acceptedExtensions.some((ext) => name.endsWith(ext))
         const hasValidType = acceptedMimeTypes.has(f.type)
 
         return hasValidExt || hasValidType
       }),
     { message: 'Please select only PDF, DOC, or DOCX document.' },
   )
-  .refine(fs => fs.every(f => f.size <= MAX_FILE_SIZE), {
+  .refine((fs) => fs.every((f) => f.size <= MAX_FILE_SIZE), {
     message: 'Each file must be 2MB or less.',
   })
 
@@ -49,7 +49,7 @@ export default function UploadForm({
   const router = useRouter()
 
   const { startUpload } = useUploadThing('documentUploader', {
-    onClientUploadComplete: async result => {
+    onClientUploadComplete: async (result) => {
       try {
         for (const res of result) {
           const fileType = path.extname(res.name).toLowerCase().replace('.', '')
@@ -63,7 +63,7 @@ export default function UploadForm({
         console.error('Error occurred while processing the file:', err)
       }
     },
-    onUploadError: err => {
+    onUploadError: (err) => {
       console.error('Error occurred while uploading', err)
     },
     onUploadBegin: () => {},
@@ -74,8 +74,8 @@ export default function UploadForm({
 
     if (incoming.length === 0) return
 
-    const validIncoming = incoming.filter(file => file.size <= MAX_FILE_SIZE)
-    const invalidFiles = incoming.filter(file => file.size > MAX_FILE_SIZE)
+    const validIncoming = incoming.filter((file) => file.size <= MAX_FILE_SIZE)
+    const invalidFiles = incoming.filter((file) => file.size > MAX_FILE_SIZE)
 
     if (invalidFiles.length > 0) {
       setError('Failed to select all documents. Each file must be 2MB or less.')
@@ -107,7 +107,7 @@ export default function UploadForm({
   }
 
   const handleDelete = (index: number) =>
-    setFiles(prevFiles => prevFiles.filter((_, i) => i !== index))
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index))
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -115,7 +115,6 @@ export default function UploadForm({
     setError(null)
 
     try {
-      //* UPLOAD FILES ---------------------------------------------------
       if (files.length === 0) {
         setError('Please select at least 1 document.')
 
@@ -146,46 +145,43 @@ export default function UploadForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className='w-full max-w-lg space-y-3 flex flex-col gap-4'
+      className="w-full max-w-lg space-y-3 flex flex-col gap-4"
     >
-      <div className='space-y-1 flex flex-col gap-2 m-0'>
-        <label
-          htmlFor='file'
-          className='font-medium m-0'
-        >
+      <div className="space-y-1 flex flex-col gap-2 m-0">
+        <label htmlFor="file" className="font-medium m-0">
           Upload Documents
         </label>
 
         <Input
-          id='file'
-          type='file'
-          accept='.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          id="file"
+          type="file"
+          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           multiple
-          onChange={e => handleChange(e)}
+          onChange={(e) => handleChange(e)}
           className={error ? 'border-destructive' : ''}
         />
 
-        {error && <p className='text-destructive font-semibold'>{error}</p>}
+        {error && <p className="text-destructive font-semibold">{error}</p>}
 
         {files.length > 0 && (
           <>
-            <p className='font-medium m-0'>Documents to Upload</p>
+            <p className="font-medium m-0">Documents to Upload</p>
 
-            <ol className='list-decimal pl-5 flex flex-col gap-1 [&>li]:font-semibold'>
+            <ol className="list-decimal pl-5 flex flex-col gap-1 [&>li]:font-semibold">
               {files.map((f, idx) => (
                 <li key={`${f.name}-${idx}`}>
-                  <div className='flex items-center justify-between'>
-                    <span className='truncate max-w-[300px] block font-normal'>
+                  <div className="flex items-center justify-between">
+                    <span className="truncate max-w-75 block font-normal">
                       {f.name}
                     </span>
 
                     <Button
                       onClick={() => handleDelete(idx)}
-                      variant='outline'
-                      size='icon'
-                      className='hover:border-destructive hover:outline-destructive cursor-pointer hover:bg-transparent'
+                      variant="outline"
+                      size="icon"
+                      className="hover:border-destructive hover:outline-destructive cursor-pointer hover:bg-transparent"
                     >
-                      <X className='w-3 h-3' />
+                      <X className="w-3 h-3" />
                     </Button>
                   </div>
                 </li>
@@ -196,30 +192,30 @@ export default function UploadForm({
       </div>
 
       <Button
-        type='submit'
-        className='w-full uppercase tracking-widest flex items-center justify-center'
+        type="submit"
+        className="w-full uppercase tracking-widest flex items-center justify-center"
         disabled={loading}
       >
         {loading ? (
           <>
             <svg
-              className='animate-spin h-5 w-5 mr-2 text-white'
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
+              className="animate-spin h-5 w-5 mr-2 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
             >
               <circle
-                className='opacity-25'
-                cx='12'
-                cy='12'
-                r='10'
-                stroke='currentColor'
-                strokeWidth='4'
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
               ></circle>
               <path
-                className='opacity-75'
-                fill='currentColor'
-                d='M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z'
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
               ></path>
             </svg>
             Uploading...
