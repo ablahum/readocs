@@ -77,10 +77,10 @@ export default function AskForm({
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              ol: ({ node, ...props }) => (
+              ol: ({ ...props }) => (
                 <ol className="list-decimal list-inside" {...props} />
               ),
-              ul: ({ node, ...props }) => (
+              ul: ({ ...props }) => (
                 <ul className="list-disc list-inside" {...props} />
               ),
             }}
